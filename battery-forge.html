@@ -1,0 +1,1178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#1a1a2e">
+    <title>BatteryForge - Forge Theory Validation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e4e4e4;
+            min-height: 100vh;
+            padding-bottom: 60px;
+        }
+
+        .header {
+            background: rgba(26, 26, 46, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 2px solid #00d4ff;
+            box-shadow: 0 4px 20px rgba(0, 212, 255, 0.3);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #00d4ff 0%, #00ff88 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+
+        .tagline {
+            font-size: 13px;
+            color: #00d4ff;
+            opacity: 0.8;
+        }
+
+        .hero {
+            padding: 30px 20px;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 26px;
+            margin-bottom: 12px;
+            line-height: 1.3;
+        }
+
+        .hero p {
+            font-size: 14px;
+            color: #b0b0b0;
+            line-height: 1.5;
+        }
+
+        .highlight {
+            color: #00ff88;
+            font-weight: 700;
+        }
+
+        .section {
+            background: rgba(255, 255, 255, 0.05);
+            margin: 20px;
+            padding: 24px;
+            border-radius: 16px;
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #00d4ff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .icon {
+            font-size: 24px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .input-value {
+            color: #00ff88;
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            background: linear-gradient(to right, #00d4ff 0%, #00ff88 100%);
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #00ff88;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0, 255, 136, 0.5);
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #00ff88;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 10px rgba(0, 255, 136, 0.5);
+        }
+
+        input[type="number"], input[type="time"] {
+            width: 100%;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(0, 212, 255, 0.3);
+            border-radius: 8px;
+            color: #00ff88;
+            font-size: 16px;
+            font-weight: 700;
+            margin-top: 8px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #00d4ff 0%, #00ff88 100%);
+            color: #1a1a2e;
+            border: none;
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            width: 100%;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 10px;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+            box-shadow: 0 4px 20px rgba(0, 255, 136, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 107, 107, 0.2);
+            border: 2px solid #ff6b6b;
+            color: #ff6b6b;
+        }
+
+        .chart-container {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+            position: relative;
+            height: 300px;
+        }
+
+        .chart-svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .prediction-card {
+            background: rgba(0, 212, 255, 0.1);
+            border: 2px solid #00d4ff;
+            padding: 16px;
+            border-radius: 12px;
+            margin-top: 12px;
+        }
+
+        .prediction-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+        }
+
+        .prediction-time {
+            font-size: 14px;
+            color: #b0b0b0;
+        }
+
+        .prediction-value {
+            font-size: 18px;
+            font-weight: 800;
+            color: #00ff88;
+        }
+
+        .actual-input {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-top: 8px;
+        }
+
+        .data-point {
+            background: rgba(0, 255, 136, 0.1);
+            border: 2px solid #00ff88;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 12px;
+        }
+
+        .data-point-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .error-badge {
+            background: rgba(255, 107, 107, 0.2);
+            color: #ff6b6b;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .error-badge.good {
+            background: rgba(0, 255, 136, 0.2);
+            color: #00ff88;
+        }
+
+        .k-value-display {
+            background: linear-gradient(135deg, #00d4ff 0%, #00ff88 100%);
+            color: #1a1a2e;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            margin-top: 20px;
+            font-weight: 700;
+        }
+
+        .k-value-big {
+            font-size: 32px;
+            margin: 10px 0;
+        }
+
+        .formula {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 12px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin-top: 12px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .status-banner {
+            background: rgba(0, 212, 255, 0.2);
+            border: 2px solid #00d4ff;
+            padding: 16px;
+            border-radius: 12px;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 30px 20px;
+            color: #666;
+            font-size: 12px;
+        }
+
+        .pulse-update {
+            animation: pulseGlow 0.6s ease-out;
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.8;
+                transform: scale(1.05);
+                box-shadow: 0 0 20px rgba(0, 255, 136, 0.6);
+            }
+        }
+
+        .calibration-history {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 16px;
+            border-radius: 12px;
+            margin-top: 20px;
+            font-size: 12px;
+        }
+
+        .calibration-step {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .calibration-step:last-child {
+            border-bottom: none;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section {
+            animation: fadeIn 0.5s ease forwards;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">🔋 BatteryForge</div>
+        <div class="tagline">Live Forge Theory Validation Experiment</div>
+    </div>
+
+    <div class="hero">
+        <h1>Predict Your Battery. <span class="highlight">Prove The Math.</span></h1>
+        <p>Configure once. Track three times. Refine the k value. Prove exponential decay is universal.</p>
+    </div>
+
+    <!-- Phase 1: Configuration -->
+    <div class="section" id="config-section">
+        <div class="section-title">
+            <span class="icon">⚙️</span>
+            <span>Configure Your Usage Pattern</span>
+        </div>
+
+        <div class="input-group">
+            <div class="input-label">
+                <span>Current Battery Level (%)</span>
+                <span class="input-value" id="current-battery-value">100</span>
+            </div>
+            <input type="range" id="current-battery" min="10" max="100" value="100" step="1">
+        </div>
+
+        <div class="input-group">
+            <div class="input-label">
+                <span>Screen Brightness (%)</span>
+                <span class="input-value" id="brightness-value">50</span>
+            </div>
+            <input type="range" id="brightness" min="10" max="100" value="50" step="10">
+        </div>
+
+        <div class="input-group">
+            <div class="input-label">
+                <span>Expected Usage Intensity</span>
+                <span class="input-value" id="usage-text">Medium</span>
+            </div>
+            <input type="range" id="usage" min="1" max="5" value="3" step="1">
+            <div style="display: flex; justify-content: space-between; font-size: 11px; color: #666; margin-top: 4px;">
+                <span>Light</span>
+                <span>Heavy</span>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label class="input-label">
+                <span>Start Time</span>
+            </label>
+            <input type="time" id="start-time" value="08:00">
+        </div>
+
+        <div class="k-value-display">
+            <div>Initial k Value (Calibrated)</div>
+            <div class="k-value-big" id="initial-k">0.120</div>
+            <div class="formula">N(t) = N₀ × e^(-kt)</div>
+        </div>
+
+        <button class="btn" id="generate-predictions">Generate Predictions</button>
+    </div>
+
+    <!-- Phase 2: Predictions -->
+    <div class="section hidden" id="predictions-section">
+        <div class="section-title">
+            <span class="icon">📊</span>
+            <span>Your Predictions (Post to Social Media)</span>
+        </div>
+
+        <div class="prediction-card">
+            <div class="prediction-row">
+                <span class="prediction-time">11:00 AM</span>
+                <span class="prediction-value" id="pred-11am">--</span>
+            </div>
+            <div class="prediction-row">
+                <span class="prediction-time">3:00 PM</span>
+                <span class="prediction-value" id="pred-3pm">--</span>
+            </div>
+            <div class="prediction-row">
+                <span class="prediction-time">9:00 PM</span>
+                <span class="prediction-value" id="pred-9pm">--</span>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <svg class="chart-svg" id="prediction-chart" viewBox="0 0 300 250"></svg>
+        </div>
+
+        <button class="btn" id="download-prediction">📸 Download Prediction Chart</button>
+        <button class="btn" id="start-tracking">Start Tracking</button>
+    </div>
+
+    <!-- Phase 3: Data Collection -->
+    <div class="section hidden" id="tracking-section">
+        <div class="section-title">
+            <span class="icon">📱</span>
+            <span>Record Actual Battery Levels</span>
+        </div>
+
+        <div class="status-banner" id="tracking-status">
+            Tracking active. Enter actual battery levels at prediction times.
+        </div>
+
+        <div class="prediction-card" style="margin-top: 20px;">
+            <h4 style="margin-bottom: 12px; color: #00d4ff;">Live Predictions (Auto-Updating)</h4>
+            <div class="prediction-row">
+                <span class="prediction-time">11:00 AM</span>
+                <span class="prediction-value" id="live-pred-11am">--</span>
+            </div>
+            <div class="prediction-row">
+                <span class="prediction-time">3:00 PM</span>
+                <span class="prediction-value" id="live-pred-3pm">--</span>
+            </div>
+            <div class="prediction-row">
+                <span class="prediction-time">9:00 PM</span>
+                <span class="prediction-value" id="live-pred-9pm">--</span>
+            </div>
+            <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 12px; color: #b0b0b0; text-align: center;">
+                Current k = <span id="live-k-value" style="color: #00ff88; font-weight: 700;">--</span>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label class="input-label">
+                <span>11:00 AM - Actual Battery %</span>
+            </label>
+            <input type="number" id="actual-11am" min="0" max="100" placeholder="Enter %">
+            <button class="btn" id="record-11am">Record 11 AM</button>
+        </div>
+
+        <div class="input-group">
+            <label class="input-label">
+                <span>3:00 PM - Actual Battery %</span>
+            </label>
+            <input type="number" id="actual-3pm" min="0" max="100" placeholder="Enter %">
+            <button class="btn" id="record-3pm">Record 3 PM</button>
+        </div>
+
+        <div class="input-group">
+            <label class="input-label">
+                <span>9:00 PM - Actual Battery %</span>
+            </label>
+            <input type="number" id="actual-9pm" min="0" max="100" placeholder="Enter %">
+            <button class="btn" id="record-9pm">Record 9 PM</button>
+        </div>
+
+        <div id="data-points-container"></div>
+    </div>
+
+    <!-- Phase 4: Results -->
+    <div class="section hidden" id="results-section">
+        <div class="section-title">
+            <span class="icon">🎯</span>
+            <span>Results & Refinement</span>
+        </div>
+
+        <div class="chart-container">
+            <svg class="chart-svg" id="comparison-chart" viewBox="0 0 300 250"></svg>
+        </div>
+
+        <div id="error-analysis"></div>
+
+        <div class="k-value-display">
+            <div>Refined k Value</div>
+            <div class="k-value-big" id="refined-k">--</div>
+            <div style="font-size: 14px; margin-top: 8px;">
+                <span id="k-change">--</span>
+            </div>
+        </div>
+
+        <button class="btn" id="download-results">📸 Download Results Chart</button>
+        <button class="btn btn-secondary" id="reset">Start New Tracking Session</button>
+    </div>
+
+    <div class="footer">
+        <div style="margin-bottom: 10px;">
+            <strong>BatteryForge</strong> by Giblets Creations
+        </div>
+        <div>
+            Live validation of Forge Theory: N(t) = N₀ × e^(-kt)
+        </div>
+        <div style="margin-top: 10px; color: #00d4ff;">
+            Monday, Wednesday, Friday tracking → Margin of error refinement
+        </div>
+    </div>
+
+    <script>
+        // Forge Theory Engine
+        const ForgeTheory = {
+            exponentialDecay: (N0, k, t) => N0 * Math.exp(-k * t),
+            
+            calculateK: (brightness, usage) => {
+                // Base k value
+                let k = 0.10;
+                
+                // Brightness impact (0.02 - 0.06 range)
+                k += (brightness / 100) * 0.04;
+                
+                // Usage intensity impact (0.00 - 0.08 range)
+                k += ((usage - 1) / 4) * 0.08;
+                
+                return Math.round(k * 1000) / 1000;
+            },
+            
+            refineK: (predictions, actuals) => {
+                // Calculate error-weighted k adjustment
+                let totalError = 0;
+                let count = 0;
+                
+                predictions.forEach((pred, idx) => {
+                    if (actuals[idx] !== null) {
+                        const error = (actuals[idx] - pred) / pred;
+                        totalError += error;
+                        count++;
+                    }
+                });
+                
+                if (count === 0) return null;
+                
+                const avgError = totalError / count;
+                
+                // Adjust k based on error
+                // If actual > predicted: battery lasted longer, k too high
+                // If actual < predicted: battery died faster, k too low
+                return avgError * -0.5; // Damping factor
+            }
+        };
+
+        // State Management
+        let sessionData = {
+            startBattery: 100,
+            startTime: null,
+            k: 0.120,
+            brightness: 50,
+            usage: 3,
+            predictions: {
+                '11am': null,
+                '3pm': null,
+                '9pm': null
+            },
+            actuals: {
+                '11am': null,
+                '3pm': null,
+                '9pm': null
+            },
+            times: {
+                '11am': 3,   // hours from start
+                '3pm': 7,
+                '9pm': 13
+            },
+            calibrationHistory: []
+        };
+
+        // UI Elements
+        const sections = {
+            config: document.getElementById('config-section'),
+            predictions: document.getElementById('predictions-section'),
+            tracking: document.getElementById('tracking-section'),
+            results: document.getElementById('results-section')
+        };
+
+        // Input Handlers
+        document.getElementById('current-battery').addEventListener('input', (e) => {
+            document.getElementById('current-battery-value').textContent = e.target.value;
+            sessionData.startBattery = parseInt(e.target.value);
+        });
+
+        document.getElementById('brightness').addEventListener('input', (e) => {
+            document.getElementById('brightness-value').textContent = e.target.value;
+            sessionData.brightness = parseInt(e.target.value);
+            updateInitialK();
+        });
+
+        document.getElementById('usage').addEventListener('input', (e) => {
+            const usageLabels = ['Very Light', 'Light', 'Medium', 'Heavy', 'Very Heavy'];
+            document.getElementById('usage-text').textContent = usageLabels[e.target.value - 1];
+            sessionData.usage = parseInt(e.target.value);
+            updateInitialK();
+        });
+
+        document.getElementById('start-time').addEventListener('change', (e) => {
+            sessionData.startTime = e.target.value;
+            updatePredictionTimes();
+        });
+
+        function updateInitialK() {
+            sessionData.k = ForgeTheory.calculateK(sessionData.brightness, sessionData.usage);
+            document.getElementById('initial-k').textContent = sessionData.k.toFixed(3);
+        }
+
+        function updatePredictionTimes() {
+            const start = sessionData.startTime || '08:00';
+            const [startHour, startMin] = start.split(':').map(Number);
+            
+            // Calculate actual times
+            const times = [11, 15, 21]; // 11am, 3pm, 9pm in 24hr
+            sessionData.times = {
+                '11am': Math.max(0, 11 - startHour),
+                '3pm': Math.max(0, 15 - startHour),
+                '9pm': Math.max(0, 21 - startHour)
+            };
+        }
+
+        // Generate Predictions
+        document.getElementById('generate-predictions').addEventListener('click', () => {
+            updatePredictionTimes();
+            
+            // Calculate predictions
+            Object.keys(sessionData.times).forEach(key => {
+                const hours = sessionData.times[key];
+                const predicted = ForgeTheory.exponentialDecay(
+                    sessionData.startBattery,
+                    sessionData.k,
+                    hours
+                );
+                sessionData.predictions[key] = Math.round(predicted);
+            });
+            
+            // Update UI
+            document.getElementById('pred-11am').textContent = `${sessionData.predictions['11am']}%`;
+            document.getElementById('pred-3pm').textContent = `${sessionData.predictions['3pm']}%`;
+            document.getElementById('pred-9pm').textContent = `${sessionData.predictions['9pm']}%`;
+            
+            // Draw prediction chart
+            drawPredictionChart();
+            
+            // Show predictions section
+            sections.config.classList.add('hidden');
+            sections.predictions.classList.remove('hidden');
+        });
+
+        // Draw Prediction Chart
+        function drawPredictionChart() {
+            const svg = document.getElementById('prediction-chart');
+            svg.innerHTML = '';
+            
+            const width = 300;
+            const height = 250;
+            const padding = 40;
+            
+            // Draw axes
+            const xAxis = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            xAxis.setAttribute('x1', padding);
+            xAxis.setAttribute('y1', height - padding);
+            xAxis.setAttribute('x2', width - padding);
+            xAxis.setAttribute('y2', height - padding);
+            xAxis.setAttribute('stroke', '#666');
+            xAxis.setAttribute('stroke-width', '2');
+            svg.appendChild(xAxis);
+            
+            const yAxis = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            yAxis.setAttribute('x1', padding);
+            yAxis.setAttribute('y1', padding);
+            yAxis.setAttribute('x2', padding);
+            yAxis.setAttribute('y2', height - padding);
+            yAxis.setAttribute('stroke', '#666');
+            yAxis.setAttribute('stroke-width', '2');
+            svg.appendChild(yAxis);
+            
+            // Draw prediction curve
+            const points = [];
+            const maxHours = 13;
+            
+            for (let h = 0; h <= maxHours; h += 0.5) {
+                const battery = ForgeTheory.exponentialDecay(sessionData.startBattery, sessionData.k, h);
+                const x = padding + (h / maxHours) * (width - 2 * padding);
+                const y = height - padding - (battery / 100) * (height - 2 * padding);
+                points.push(`${x},${y}`);
+            }
+            
+            const curve = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+            curve.setAttribute('points', points.join(' '));
+            curve.setAttribute('fill', 'none');
+            curve.setAttribute('stroke', '#00d4ff');
+            curve.setAttribute('stroke-width', '3');
+            svg.appendChild(curve);
+            
+            // Add prediction points
+            ['11am', '3pm', '9pm'].forEach((key, idx) => {
+                const hours = sessionData.times[key];
+                const battery = sessionData.predictions[key];
+                const x = padding + (hours / maxHours) * (width - 2 * padding);
+                const y = height - padding - (battery / 100) * (height - 2 * padding);
+                
+                const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                circle.setAttribute('cx', x);
+                circle.setAttribute('cy', y);
+                circle.setAttribute('r', '6');
+                circle.setAttribute('fill', '#00ff88');
+                svg.appendChild(circle);
+                
+                const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                label.setAttribute('x', x);
+                label.setAttribute('y', y - 12);
+                label.setAttribute('fill', '#00ff88');
+                label.setAttribute('font-size', '12');
+                label.setAttribute('text-anchor', 'middle');
+                label.textContent = `${battery}%`;
+                svg.appendChild(label);
+            });
+            
+            // Add title
+            const title = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            title.setAttribute('x', width / 2);
+            title.setAttribute('y', 20);
+            title.setAttribute('fill', '#00d4ff');
+            title.setAttribute('font-size', '14');
+            title.setAttribute('font-weight', 'bold');
+            title.setAttribute('text-anchor', 'middle');
+            title.textContent = `Prediction: k = ${sessionData.k.toFixed(3)}`;
+            svg.appendChild(title);
+        }
+
+        // Download Prediction Chart
+        document.getElementById('download-prediction').addEventListener('click', () => {
+            downloadChart('prediction-chart', 'batteryforge-prediction.png');
+        });
+
+        // Start Tracking
+        document.getElementById('start-tracking').addEventListener('click', () => {
+            sections.predictions.classList.add('hidden');
+            sections.tracking.classList.remove('hidden');
+            
+            // Initialize live predictions display
+            updateRemainingPredictions();
+        });
+
+        // Record Data Points
+        document.getElementById('record-11am').addEventListener('click', () => recordActual('11am'));
+        document.getElementById('record-3pm').addEventListener('click', () => recordActual('3pm'));
+        document.getElementById('record-9pm').addEventListener('click', () => recordActual('9pm'));
+
+        function recordActual(timeKey) {
+            const inputId = `actual-${timeKey}`;
+            const value = parseInt(document.getElementById(inputId).value);
+            
+            if (isNaN(value) || value < 0 || value > 100) {
+                alert('Please enter a valid battery percentage (0-100)');
+                return;
+            }
+            
+            sessionData.actuals[timeKey] = value;
+            
+            // Add data point card
+            addDataPointCard(timeKey, value);
+            
+            // AUTOMATIC REAL-TIME CALIBRATION
+            autoCalibrate();
+            
+            // Check if all data collected
+            if (Object.values(sessionData.actuals).every(v => v !== null)) {
+                calculateResults();
+            }
+        }
+        
+        function autoCalibrate() {
+            // Collect all available data points
+            const dataPoints = [];
+            Object.keys(sessionData.actuals).forEach(key => {
+                if (sessionData.actuals[key] !== null) {
+                    dataPoints.push({
+                        time: sessionData.times[key],
+                        actual: sessionData.actuals[key],
+                        predicted: sessionData.predictions[key]
+                    });
+                }
+            });
+            
+            if (dataPoints.length === 0) return;
+            
+            // Calculate optimal k using actual data
+            // Using least squares fitting for exponential decay
+            const N0 = sessionData.startBattery;
+            
+            // Simple k estimation from available points
+            let sumK = 0;
+            dataPoints.forEach(point => {
+                // Solve for k: N(t) = N₀ × e^(-kt)
+                // k = -ln(N(t)/N₀) / t
+                const kEstimate = -Math.log(point.actual / N0) / point.time;
+                sumK += kEstimate;
+            });
+            
+            const newK = sumK / dataPoints.length;
+            
+            // Update k value
+            const oldK = sessionData.k;
+            sessionData.k = Math.round(newK * 1000) / 1000;
+            
+            // Track calibration history
+            sessionData.calibrationHistory.push({
+                timestamp: new Date().toLocaleTimeString(),
+                oldK: oldK,
+                newK: sessionData.k,
+                dataPoints: dataPoints.length
+            });
+            
+            // Recalculate remaining predictions with new k
+            Object.keys(sessionData.predictions).forEach(key => {
+                if (sessionData.actuals[key] === null) {
+                    const hours = sessionData.times[key];
+                    const newPrediction = ForgeTheory.exponentialDecay(N0, sessionData.k, hours);
+                    sessionData.predictions[key] = Math.round(newPrediction);
+                }
+            });
+            
+            // Update UI to show calibration happened
+            updateCalibrationNotice(oldK, sessionData.k, dataPoints.length);
+            
+            // Update any remaining prediction displays with pulse effect
+            updateRemainingPredictions();
+            
+            // Add pulse effect to live prediction card
+            const liveCard = document.querySelector('.prediction-card');
+            if (liveCard) {
+                liveCard.classList.add('pulse-update');
+                setTimeout(() => {
+                    liveCard.classList.remove('pulse-update');
+                }, 600);
+            }
+            
+            // Update calibration history display
+            updateCalibrationHistory();
+        }
+        
+        function updateCalibrationNotice(oldK, newK, dataPoints) {
+            const status = document.getElementById('tracking-status');
+            const change = ((newK - oldK) / oldK * 100).toFixed(1);
+            const direction = newK > oldK ? '↑' : '↓';
+            
+            status.innerHTML = `
+                <strong>🔄 Auto-Calibrated!</strong><br>
+                k adjusted: ${oldK.toFixed(3)} → ${newK.toFixed(3)} (${direction}${Math.abs(change)}%)<br>
+                Using ${dataPoints} data point${dataPoints > 1 ? 's' : ''} for refinement<br>
+                <span style="font-size: 12px; opacity: 0.8;">Remaining predictions updated automatically</span>
+            `;
+            status.style.background = 'rgba(0, 255, 136, 0.2)';
+            status.style.borderColor = '#00ff88';
+        }
+        
+        function updateCalibrationHistory() {
+            let historyContainer = document.getElementById('calibration-history-container');
+            
+            // Create container if it doesn't exist
+            if (!historyContainer) {
+                historyContainer = document.createElement('div');
+                historyContainer.id = 'calibration-history-container';
+                historyContainer.className = 'calibration-history';
+                historyContainer.innerHTML = '<h4 style="margin-bottom: 12px; color: #00d4ff;">Calibration History</h4>';
+                
+                const dataPointsContainer = document.getElementById('data-points-container');
+                dataPointsContainer.appendChild(historyContainer);
+            }
+            
+            // Update with latest history
+            const historyHTML = sessionData.calibrationHistory.map((entry, idx) => `
+                <div class="calibration-step">
+                    <span>${entry.timestamp}</span>
+                    <span style="color: #b0b0b0;">k: ${entry.oldK.toFixed(3)} → <strong style="color: #00ff88;">${entry.newK.toFixed(3)}</strong></span>
+                    <span style="color: #00d4ff;">${entry.dataPoints} pt${entry.dataPoints > 1 ? 's' : ''}</span>
+                </div>
+            `).join('');
+            
+            historyContainer.innerHTML = '<h4 style="margin-bottom: 12px; color: #00d4ff;">🔄 Calibration History</h4>' + historyHTML;
+        }
+        
+        function updateRemainingPredictions() {
+            // Update prediction values in tracking section
+            ['11am', '3pm', '9pm'].forEach(key => {
+                const livePredElement = document.getElementById(`live-pred-${key}`);
+                if (livePredElement) {
+                    if (sessionData.actuals[key] !== null) {
+                        // Show actual if recorded
+                        livePredElement.textContent = `${sessionData.actuals[key]}% (actual)`;
+                        livePredElement.style.color = '#ff6b6b';
+                    } else {
+                        // Show updated prediction
+                        livePredElement.textContent = `${sessionData.predictions[key]}%`;
+                        livePredElement.style.color = '#00ff88';
+                        livePredElement.style.textShadow = '0 0 10px rgba(0, 255, 136, 0.5)';
+                    }
+                }
+            });
+            
+            // Update live k value
+            const liveKElement = document.getElementById('live-k-value');
+            if (liveKElement) {
+                liveKElement.textContent = sessionData.k.toFixed(3);
+            }
+        }
+
+        function addDataPointCard(timeKey, actual) {
+            const container = document.getElementById('data-points-container');
+            const predicted = sessionData.predictions[timeKey];
+            const error = Math.abs(actual - predicted);
+            const errorPercent = ((error / predicted) * 100).toFixed(1);
+            
+            const card = document.createElement('div');
+            card.className = 'data-point';
+            card.innerHTML = `
+                <div class="data-point-header">
+                    <strong>${timeKey.toUpperCase()}</strong>
+                    <span class="error-badge ${error <= 5 ? 'good' : ''}">
+                        ${error <= 5 ? '✓' : '⚠'} ${errorPercent}% error
+                    </span>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-size: 14px;">
+                    <span>Predicted: ${predicted}%</span>
+                    <span>Actual: ${actual}%</span>
+                    <span>Δ ${actual - predicted > 0 ? '+' : ''}${actual - predicted}%</span>
+                </div>
+            `;
+            container.appendChild(card);
+        }
+
+        // Calculate Results
+        function calculateResults() {
+            const predictions = Object.values(sessionData.predictions);
+            const actuals = Object.values(sessionData.actuals);
+            
+            // Calculate k adjustment
+            const kAdjustment = ForgeTheory.refineK(predictions, actuals);
+            const refinedK = sessionData.k + kAdjustment;
+            
+            // Update UI
+            document.getElementById('refined-k').textContent = refinedK.toFixed(3);
+            const change = ((kAdjustment / sessionData.k) * 100).toFixed(1);
+            const changeText = kAdjustment > 0 ? 
+                `↑ ${change}% increase (battery drained faster)` : 
+                `↓ ${Math.abs(change)}% decrease (battery lasted longer)`;
+            document.getElementById('k-change').textContent = changeText;
+            
+            // Calculate error metrics
+            const errors = predictions.map((pred, idx) => {
+                const actual = actuals[idx];
+                const error = Math.abs(actual - pred);
+                const errorPercent = (error / pred) * 100;
+                return { error, errorPercent, pred, actual };
+            });
+            
+            const avgError = errors.reduce((sum, e) => sum + e.errorPercent, 0) / errors.length;
+            
+            const errorAnalysis = document.getElementById('error-analysis');
+            errorAnalysis.innerHTML = `
+                <div class="prediction-card">
+                    <h4 style="margin-bottom: 12px; color: #00d4ff;">Error Analysis</h4>
+                    <div class="prediction-row">
+                        <span>Average Error:</span>
+                        <span class="prediction-value">${avgError.toFixed(1)}%</span>
+                    </div>
+                    <div class="prediction-row">
+                        <span>Original k:</span>
+                        <span style="color: #b0b0b0;">${sessionData.k.toFixed(3)}</span>
+                    </div>
+                    <div class="prediction-row">
+                        <span>Refined k:</span>
+                        <span class="prediction-value">${refinedK.toFixed(3)}</span>
+                    </div>
+                    <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 13px; color: #b0b0b0;">
+                        Run this again on Wed & Fri with refined k = ${refinedK.toFixed(3)} for improved accuracy
+                    </div>
+                </div>
+            `;
+            
+            // Draw comparison chart
+            drawComparisonChart(refinedK);
+            
+            // Show results
+            sections.tracking.classList.add('hidden');
+            sections.results.classList.remove('hidden');
+        }
+
+        // Draw Comparison Chart
+        function drawComparisonChart(refinedK) {
+            const svg = document.getElementById('comparison-chart');
+            svg.innerHTML = '';
+            
+            const width = 300;
+            const height = 250;
+            const padding = 40;
+            
+            // Draw axes
+            const xAxis = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            xAxis.setAttribute('x1', padding);
+            xAxis.setAttribute('y1', height - padding);
+            xAxis.setAttribute('x2', width - padding);
+            xAxis.setAttribute('y2', height - padding);
+            xAxis.setAttribute('stroke', '#666');
+            xAxis.setAttribute('stroke-width', '2');
+            svg.appendChild(xAxis);
+            
+            const yAxis = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            yAxis.setAttribute('x1', padding);
+            yAxis.setAttribute('y1', padding);
+            yAxis.setAttribute('x2', padding);
+            yAxis.setAttribute('y2', height - padding);
+            yAxis.setAttribute('stroke', '#666');
+            yAxis.setAttribute('stroke-width', '2');
+            svg.appendChild(yAxis);
+            
+            const maxHours = 13;
+            
+            // Draw original prediction curve
+            const originalPoints = [];
+            for (let h = 0; h <= maxHours; h += 0.5) {
+                const battery = ForgeTheory.exponentialDecay(sessionData.startBattery, sessionData.k, h);
+                const x = padding + (h / maxHours) * (width - 2 * padding);
+                const y = height - padding - (battery / 100) * (height - 2 * padding);
+                originalPoints.push(`${x},${y}`);
+            }
+            
+            const originalCurve = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+            originalCurve.setAttribute('points', originalPoints.join(' '));
+            originalCurve.setAttribute('fill', 'none');
+            originalCurve.setAttribute('stroke', '#00d4ff');
+            originalCurve.setAttribute('stroke-width', '2');
+            originalCurve.setAttribute('opacity', '0.5');
+            svg.appendChild(originalCurve);
+            
+            // Draw refined prediction curve
+            const refinedPoints = [];
+            for (let h = 0; h <= maxHours; h += 0.5) {
+                const battery = ForgeTheory.exponentialDecay(sessionData.startBattery, refinedK, h);
+                const x = padding + (h / maxHours) * (width - 2 * padding);
+                const y = height - padding - (battery / 100) * (height - 2 * padding);
+                refinedPoints.push(`${x},${y}`);
+            }
+            
+            const refinedCurve = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+            refinedCurve.setAttribute('points', refinedPoints.join(' '));
+            refinedCurve.setAttribute('fill', 'none');
+            refinedCurve.setAttribute('stroke', '#00ff88');
+            refinedCurve.setAttribute('stroke-width', '3');
+            svg.appendChild(refinedCurve);
+            
+            // Add actual data points
+            ['11am', '3pm', '9pm'].forEach((key, idx) => {
+                const hours = sessionData.times[key];
+                const actual = sessionData.actuals[key];
+                const x = padding + (hours / maxHours) * (width - 2 * padding);
+                const y = height - padding - (actual / 100) * (height - 2 * padding);
+                
+                const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                circle.setAttribute('cx', x);
+                circle.setAttribute('cy', y);
+                circle.setAttribute('r', '6');
+                circle.setAttribute('fill', '#ff6b6b');
+                circle.setAttribute('stroke', '#fff');
+                circle.setAttribute('stroke-width', '2');
+                svg.appendChild(circle);
+            });
+            
+            // Add legend
+            const legend = [
+                { color: '#00d4ff', text: `Original (k=${sessionData.k.toFixed(3)})`, y: 15 },
+                { color: '#00ff88', text: `Refined (k=${refinedK.toFixed(3)})`, y: 30 },
+                { color: '#ff6b6b', text: 'Actual Data', y: 45 }
+            ];
+            
+            legend.forEach(item => {
+                const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                line.setAttribute('x1', width - 120);
+                line.setAttribute('y1', item.y);
+                line.setAttribute('x2', width - 100);
+                line.setAttribute('y2', item.y);
+                line.setAttribute('stroke', item.color);
+                line.setAttribute('stroke-width', '3');
+                svg.appendChild(line);
+                
+                const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                label.setAttribute('x', width - 95);
+                label.setAttribute('y', item.y + 4);
+                label.setAttribute('fill', '#e4e4e4');
+                label.setAttribute('font-size', '10');
+                label.textContent = item.text;
+                svg.appendChild(label);
+            });
+        }
+
+        // Download Chart
+        function downloadChart(chartId, filename) {
+            const svg = document.getElementById(chartId);
+            const svgData = new XMLSerializer().serializeToString(svg);
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            const img = new Image();
+            
+            canvas.width = 900;
+            canvas.height = 750;
+            
+            // Dark background
+            ctx.fillStyle = '#16213e';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            img.onload = () => {
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                
+                const a = document.createElement('a');
+                a.download = filename;
+                a.href = canvas.toDataURL('image/png');
+                a.click();
+            };
+            
+            img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgData)));
+        }
+
+        document.getElementById('download-results').addEventListener('click', () => {
+            downloadChart('comparison-chart', 'batteryforge-results.png');
+        });
+
+        // Reset
+        document.getElementById('reset').addEventListener('click', () => {
+            if (confirm('Start a new tracking session? Current data will be lost.')) {
+                location.reload();
+            }
+        });
+
+        // Initialize
+        updateInitialK();
+        updatePredictionTimes();
+    </script>
+</body>
+</html>
